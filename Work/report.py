@@ -2,35 +2,15 @@
 #
 # Exercise 2.4
 import csv
+from fileparse import parse_csv
+
 
 def read_portfolio(filename):
-    portfolio = []
-
-    with open(filename, 'rt' ) as f:
-        rows = csv.reader(f)
-        headers = next(rows)
-        for row in rows:
-            record = dict(zip(headers, row))
-            holding =  {
-                'name'  : record['name'],
-                'shares': int(record['shares']), 
-                'price' : float(record['price'])
-            }
-            portfolio.append(holding)
-    return portfolio
+    return parse_csv(filename, select=['name','shares','price'], types=[str,int,float], delimiter=',', has_headers=True)
 
 
 def read_prices(filename):
-    prices = {}
-    with open(filename) as f:
-        rows = csv.reader(f)
-        for row in rows:
-            try:
-                prices[row[0]] = float(row[1])
-            except IndexError:
-                pass
-
-    return prices
+    return dict(parse_csv(filename, types=[str,float], delimiter=','))
 
 
 def make_report(portfolio, prices):
@@ -50,6 +30,7 @@ def print_report(report):
     for name, shares, price, change in report:
         print('{:>10s} {:>10d} {:>10} {:>10.2f}'.format(name, shares, '${:.2f}'.format(price), change))
 
+
 def print_summary(portfolio, prices):
     total_cost = 0.0
     current_value = 0.0
@@ -67,7 +48,7 @@ def portfolio_report(portfolioFile, pricesFile):
     portfolio = read_portfolio(portfolioFile)
     prices = read_prices(pricesFile)
 
-    report = make_report(portfolio,  prices)
+    report = make_report(portfolio, prices)
 
     print_report(report)
     print_summary(portfolio, prices)
