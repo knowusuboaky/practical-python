@@ -20,7 +20,7 @@ def parse_csv(filename, select=None, types=None, has_headers=False, delimiter=' 
             headers = select
 
         records = []
-        for row in rows:
+        for num, row in enumerate(rows, 1):
             if not row:    # Skip rows with no data
                 continue
             # Filter the row if specific columns were selected
@@ -32,12 +32,14 @@ def parse_csv(filename, select=None, types=None, has_headers=False, delimiter=' 
                     row = [func(val) for func, val in zip(types, row)]
                 except ValueError as e:
                     if not silence_errors:
-                        print(f"Row {rowno}: Couldn't convert {row}")
-                        print(f"Row {rowno}: Reason {e}")
+                        print(f"Row {num}: Couldn't convert {row}")
+                        print(f"Row {num}: Reason {e}")
                     continue
             # Make a dictionary
-            # record = dict(zip(headers, row))
-            record = tuple(row)
+            if headers:
+                record = dict(zip(headers, row))
+            else:
+                record = tuple(row)
             records.append(record)
 
     return records
