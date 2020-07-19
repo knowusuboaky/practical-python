@@ -57,13 +57,13 @@ def print_summary(portfolio, prices):
         total_cost += item['shares'] * item['price']
         current_value += item['shares'] * prices[item['name']]
 
-    gain = total_cost - current_value
+    gain = current_value - total_cost
     print(f'Total cost    : {total_cost:0.2f}')
     print(f'Current value : {current_value:0.2f}')
     print(f'Gain          : {gain:0.2f}')
 
 
-def reporting(portfolioFile, pricesFile):
+def portfolio_report(portfolioFile, pricesFile):
     portfolio = read_portfolio(portfolioFile)
     prices = read_prices(pricesFile)
 
@@ -73,4 +73,4 @@ def reporting(portfolioFile, pricesFile):
     print_summary(portfolio, prices)
 
 
-reporting('Data/portfolio.csv', 'Data/prices.csv')
+portfolio_report('Data/portfolio.csv', 'Data/prices.csv')
