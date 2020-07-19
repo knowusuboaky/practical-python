@@ -4,9 +4,9 @@
 import csv
 
 def parse_csv(filename, select=None, types=None, has_headers=False, delimiter=' ', silence_errors=True):
-    '''
-    Parse a CSV file into a list of records
-    '''
+    if select and not has_headers:
+        raise RuntimeError('select requires column headers')
+
     with open(filename) as f:
         rows = csv.reader(f, delimiter=delimiter)
 
