@@ -3,22 +3,14 @@
 # Exercise 1.27
 import csv
 import sys
+from report import read_portfolio
 
 def portfolio_cost(filename):
-    f = open(filename, 'rt')
-    rows = csv.reader(f)
-    header = next(rows)
-    cost = 0;
+    portfolio = read_portfolio(filename)
 
-    for num, row in enumerate(rows, start=1):
-        record = dict(zip(header, row))
-        try:
-            shares = int(record['shares'])
-            value = float(record['price'])
-            cost += shares * value
-        except ValueError:
-            print(f'Row {num}: Couldn\'t convert: {row}')
-    f.close()
+    cost = 0;
+    for item in portfolio:
+        cost += item['shares'] * item['price']
     return cost
 
 if len(sys.argv) == 2:
