@@ -3,12 +3,12 @@
 # Exercise 3.3
 import csv
 
-def parse_csv(filename, select=None, types=None, has_headers=False):
+def parse_csv(filename, select=None, types=None, has_headers=False, delimiter=' '):
     '''
     Parse a CSV file into a list of records
     '''
     with open(filename) as f:
-        rows = csv.reader(f)
+        rows = csv.reader(f, delimiter=delimiter)
 
         # Read the file headers
         headers = next(rows) if has_headers else []
@@ -18,15 +18,13 @@ def parse_csv(filename, select=None, types=None, has_headers=False):
         if select:
             indices = [headers.index(colname) for colname in select]
             headers = select
-        else:
-            indices = []
 
         records = []
         for row in rows:
             if not row:    # Skip rows with no data
                 continue
             # Filter the row if specific columns were selected
-            if indices:
+            if select:
                 row = [row[index] for index in indices]
 
             if types:
