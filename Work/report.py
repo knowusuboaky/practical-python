@@ -19,6 +19,7 @@ def read_portfolio(filename):
             portfolio.append(holding)
     return portfolio
 
+
 def read_prices(filename):
     prices = {}
     with open(filename) as f:
@@ -31,6 +32,7 @@ def read_prices(filename):
 
     return prices
 
+
 def make_report(portfolio, prices):
     rows = []
     for item in portfolio:
@@ -41,27 +43,34 @@ def make_report(portfolio, prices):
     return rows
 
 
-portfolio = read_portfolio('Data/portfoliodate.csv')
-prices = read_prices('Data/prices.csv')
+def print_report(report):
+    headers = ('Name', 'Shares', 'Price', 'Change')
+    print(f'%10s %10s %10s %10s' % headers)
+    print(('---------- ') * len(headers))
+    for name, shares, price, change in report:
+        print('{:>10s} {:>10d} {:>10} {:>10.2f}'.format(name, shares, '${:.2f}'.format(price), change))
 
-total_cost = 0.0
-for item in portfolio:
-    total_cost += item['shares'] * item['price']
+def print_summary(portfolio, prices):
+    total_cost = 0.0
+    current_value = 0.0
+    for item in portfolio:
+        total_cost += item['shares'] * item['price']
+        current_value += item['shares'] * prices[item['name']]
 
-print('Total cost', total_cost)
+    gain = total_cost - current_value
+    print(f'Total cost    : {total_cost:0.2f}')
+    print(f'Current value : {current_value:0.2f}')
+    print(f'Gain          : {gain:0.2f}')
 
-current_value = 0.0
-for item in portfolio:
-    current_value += item['shares'] * prices[item['name']]
 
-gain = current_value - total_cost
+def reporting(portfolioFile, pricesFile):
+    portfolio = read_portfolio(portfolioFile)
+    prices = read_prices(pricesFile)
 
-report = make_report(portfolio, prices)
-headers = ('Name', 'Shares', 'Price', 'Change')
-print(f'%10s %10s %10s %10s' % headers)
-print(('---------- ') * len(headers))
-for name, shares, price, change in report:
-    print('{:>10s} {:>10d} {:>10} {:>10.2f}'.format(name, shares, '${:.2f}'.format(price), change))
+    report = make_report(portfolio,  prices)
 
-print(f'Current value : {current_value:0.2f}')
-print(f'Gain          : {gain:0.2f}')
+    print_report(report)
+    print_summary(portfolio, prices)
+
+
+reporting('Data/portfolio.csv', 'Data/prices.csv')
